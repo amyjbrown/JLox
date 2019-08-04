@@ -162,19 +162,21 @@ class Scanner {
     // Multiline comment
 
     private void multiline() {
-        boolean found = false;
+        // This edit will allow for multiple embedded multiline comments
+        int depth = 1;
         // This will churn through a multiline comment until it reaches its end
-        while (!found) {
+        while (depth > 0 && !isAtEnd()) {
             char c = advance();
             switch (c){
                 // jump to new line
                 case '\n': line ++; break;
+                // Check to see if further embedded
+                case '/':
+                    if (match('*')) depth++; break;
                 case '*':
-                    if ( match('/')) {
-                        found = true;
-                        break;
-                    }
-                default: break;
+                    if (match('/')) depth--; break;
+                default:
+                    break;
             }
         }
     }
