@@ -78,9 +78,10 @@ class Scanner {
             case '/':
                 if (match('/')) {
                     while ( peek() != '\n' && !isAtEnd()) advance();
-                } /* else if ( match('*') {
-                        while  /*      // TODO this
-                } */
+                } else if (match('*')) {
+                    advance();
+                    multiline();
+                }
                 else{
                     addToken(SLASH);
                 }
@@ -156,6 +157,26 @@ class Scanner {
         TokenType type = keywords.get(text);
         if (type == null) type = IDENTIFIER;
         addToken(type);
+    }
+
+    // Multiline comment
+
+    private void multiline() {
+        boolean found = false;
+        // This will churn through a multiline comment until it reaches its end
+        while (!found) {
+            char c = advance();
+            switch (c){
+                // jump to new line
+                case '\n': line ++; break;
+                case '*':
+                    if ( match('/')) {
+                        found = true;
+                        break;
+                    }
+                default: break;
+            }
+        }
     }
 
     // Helper functions
