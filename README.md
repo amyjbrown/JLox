@@ -1,4 +1,5 @@
 # JLox
+<3 Amy Brown <3
 Custom Implementation of the Lox language in Java via Bob Nystrom's Crafting Interpreters (https://craftinginterpreters.com)
 This implementation hopes to add several of the challenge features discussed in the book
 
