@@ -69,8 +69,6 @@ public class Parser {
 
         //Expr: {unary}
         while (match (SLASH, STAR)) {
-            // if next element = * or /:
-            // Expr := {unary, operatortoken, unary} which can embed further to the right
             Token operator = previous();
             Expr right = unary();
             expr = new Expr.Binary(expr, operator,right);
@@ -151,4 +149,23 @@ public class Parser {
         return new ParseError();
         }
 
+    private void synchronize() {
+        advance();
+        while (!isAtEnd()) {
+            if (previous().type == SEMICOLON) return;
+
+            switch (peek().type) {
+                case CLASS:
+                case FUN:
+                case VAR:
+                case FOR:
+                case IF:
+                case WHILE:
+                case PRINT:
+                case RETURN:
+                    return;
+            }
+            advance();
+        }
+    }
 }
