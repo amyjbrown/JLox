@@ -20,6 +20,9 @@ public class Interpreter implements Expr.Visitor<Object> {
         Object right = evaluate(expr.right);
 
         switch (expr.operator.type){
+            // New element: C style operator evaluates left and right, then returns right
+            case COMMA:
+                return right;
             case GREATER:
                 checkNumberOperands(expr.operator, left, right);
                 return (double) left > (double) right;
