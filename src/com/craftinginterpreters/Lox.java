@@ -70,11 +70,12 @@ public class Lox {
         System.err.println(
                 "[line " + line + "] Error" + where + ": " + message
         );
+        hadError = true;
     }
 
     static void error(Token token, String message) {
         if (token.type == TokenType.EOF) {
-            report(token.line, "at end", message);
+            report(token.line, " at end", message);
         }
         else {
             report(token.line, " at '" + token.lexeme + "'", message);
@@ -85,5 +86,6 @@ public class Lox {
         System.err.println(
                 error.getMessage() + "\n[line " + error.token.line + "]");
         hadRuntimeError = true;
+        //System.out.println(); // This keeps the new > on the same line for IDEA, may remove later
     }
 }
