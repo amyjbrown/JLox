@@ -21,6 +21,10 @@ public class GenerateAST {
                 "Literal : Object value",
                 "Unary : Token operator, Expr right"
         ));
+        defineAst(outputDir, "Stmt", Arrays.asList(
+                "Expression : Expr expression",
+                "Print : Expr expression"
+        ));
     }
 
     private static void defineAst(
@@ -38,7 +42,7 @@ public class GenerateAST {
 
             // The ast classes
             for (String type : types){
-                String className = type.split(":")[0].trim();;
+                String className = type.split(":")[0].trim();
                 String fields = type.split(":")[1].trim();
                 defineType(writer, baseName, className, fields);
             }
