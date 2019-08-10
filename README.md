@@ -14,5 +14,5 @@ Bonus features:
     `/* Nesting 1 /* Nesting 2  /* Nesting 3 */ */ */`
   * Error production handling for unary expressions, so that invalid expressions like `/2` will give users a better error format like 
   `[line 1] Error at '/': Invalid unary operator. `
-  *[in extra] C-style comma operator: `true, false, "walrus"` evaluates all elements in the comma list and returns the last item
-  *[in extra] C-style ternary operator: `true ? "Walrus" : "Panda"`
+  * [in extra] C-style comma operator: `true, false, "walrus"` evaluates all elements in the comma list and returns the last item
+  * [in extra] C-style ternary operator: `true ? "Walrus" : "Panda"`
