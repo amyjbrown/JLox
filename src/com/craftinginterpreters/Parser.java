@@ -82,6 +82,10 @@ public class Parser {
             Token operator = previous();
             Expr right = unary();
             return new Expr.Unary(operator, right);
+        }  else if (match(PLUS,SLASH,STAR, COMMA,
+                EQUAL_EQUAL, BANG_EQUAL,
+                LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
+            throw error(previous(), "Invalid unary operator");
         }
         return primary();
     }
