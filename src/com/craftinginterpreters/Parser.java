@@ -32,13 +32,25 @@ public class Parser {
     // Comma operator
     private Expr comma()
     {
-        Expr expr = equality();
+        Expr expr = ternary();
 
         while(match(COMMA))
         {
             Token operator = previous();
-            Expr right = equality();
+            Expr right = ternary();
             expr = new Expr.Binary(expr, operator, right);
+        }
+        return expr;
+    }
+
+    private Expr ternary() {
+        Expr expr = equality();
+
+        while (match(QUESTION)){
+            Expr left = expression();
+            consume(COLON, "Ternary Expression must have else clause ");
+            Expr right = ternary();
+            expr = new Expr.Ternary(expr, left, right);
         }
         return expr;
     }

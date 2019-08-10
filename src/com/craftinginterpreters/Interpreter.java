@@ -15,6 +15,13 @@ public class Interpreter implements Expr.Visitor<Object> {
         return expr.accept(this);
     }
 
+    public Object visitTernaryExpr(Expr.Ternary expr) {
+        Object condition = evaluate(expr.condition);
+        // Evaluate left if condition, else right
+        if (isTruthy(condition)) return evaluate(expr.left);
+        else return evaluate(expr.right);
+    }
+
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = evaluate(expr.left);
         Object right = evaluate(expr.right);

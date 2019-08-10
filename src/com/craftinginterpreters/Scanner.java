@@ -66,6 +66,8 @@ class Scanner {
             case '+': addToken(PLUS); break;
             case ';': addToken(SEMICOLON); break;
             case '*': addToken(STAR); break;
+            case '?': addToken(QUESTION); break;
+            case ':': addToken(COLON); break;
 
             //multiline characters
             case '!': addToken( match('=') ? BANG_EQUAL: BANG ); break;
@@ -110,7 +112,6 @@ class Scanner {
                 break;
 
         }
-
 
     }
     // Literal Creation

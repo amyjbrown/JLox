@@ -20,6 +20,11 @@ public class AstPrinter implements Expr.Visitor<String> {
         System.out.println(new AstPrinter().print(expression));
     }
 
+    @Override
+    public String visitTernaryExpr(Expr.Ternary expr){
+        return parenthesize("?:", expr.condition, expr.left, expr.right);
+    }
+
 
     @Override
     public String visitBinaryExpr(Expr.Binary expr) {
