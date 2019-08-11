@@ -38,7 +38,8 @@ public class Lox {
     private static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
-
+        // Super hacky but works perfectly for my purposes!
+        interpreter.interactive_mode = true;
         for (;;){
             System.out.print("> ");
             run(reader.readLine());
