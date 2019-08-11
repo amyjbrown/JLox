@@ -6,6 +6,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = new Environment();
     public boolean interactive_mode = false;
 
+    // Top level management
     void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement: statements) {
@@ -15,7 +16,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             Lox.runtimeError(error);
         }
     }
-
     private Object evaluate(Expr expr) {
         return expr.accept(this);
     }
@@ -25,7 +25,25 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    private void executeBlock(List<Stmt> statements, Environment environment) {
+        Environment previous = this.environment;
+        try {
+            this.environment = environment;
+
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
+        } finally {
+            this.environment = previous;
+        }
+    }
+
     //
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
+    }
 
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
