@@ -88,21 +88,8 @@ public class Parser {
         return expr;
     }
 
-    private Expr ternary() {
-        Expr expr = equality();
-
-        while (match(QUESTION)){
-            Expr left = expression();
-            consume(COLON, "Ternary Expression must have else clause ");
-            Expr right = ternary();
-            expr = new Expr.Ternary(expr, left, right);
-        }
-        return expr;
-        return assignment();
-    }
-
     private Expr assignment(){
-        Expr expr = equality();
+        Expr expr = ternary();
 
         if (match(EQUAL)) {
             Token equals = previous();
@@ -118,6 +105,19 @@ public class Parser {
         }
 
         return expr;
+    }
+
+    private Expr ternary() {
+        Expr expr = equality();
+
+        while (match(QUESTION)){
+            Expr left = expression();
+            consume(COLON, "Ternary Expression must have else clause ");
+            Expr right = ternary();
+            expr = new Expr.Ternary(expr, left, right);
+        }
+        return expr;
+        //return assignment();
     }
 
     private Expr equality() {
