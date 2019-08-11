@@ -20,7 +20,7 @@ public class Parser {
     List<Stmt> parse(){
         List<Stmt> statements = new ArrayList<>();
         while(!isAtEnd()) {
-            statements.add(statement());
+            statements.add(declaration());
         }
 
         return statements;
@@ -29,6 +29,29 @@ public class Parser {
 
     // Syntax tree elements
     // Statements
+
+    private Stmt declaration() {
+        try {
+            if (match(VAR)) return varDeclaration();
+
+            return statement();
+        } catch (ParseError error) {
+            synchronize();
+            return null;
+        }
+    }
+
+    private Stmt varDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect variable name.");
+
+        Expr initializer = null;
+        if (match(EQUAL)) {
+            initializer = expression();
+        }
+        consume(SEMICOLON, "Expect ';' after variable declaration.");
+        return new Stmt.Var(name, initializer);
+    }
+
     private Stmt statement() {
         if (match(PRINT)) return printStatement();
         return expressionStatement();
@@ -54,12 +77,12 @@ public class Parser {
     // Comma operator
     private Expr comma()
     {
-        Expr expr = ternary();
+        Expr expr = assignment();
 
         while(match(COMMA))
         {
             Token operator = previous();
-            Expr right = ternary();
+            Expr right = assignment();
             expr = new Expr.Binary(expr, operator, right);
         }
         return expr;
@@ -74,6 +97,26 @@ public class Parser {
             Expr right = ternary();
             expr = new Expr.Ternary(expr, left, right);
         }
+        return expr;
+        return assignment();
+    }
+
+    private Expr assignment(){
+        Expr expr = equality();
+
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ( (Expr.Variable) expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            //This isn't thrown because it isn't a parser error, but a runtime-esq error
+            error(equals, "Invalid Assignment target.");
+        }
+
         return expr;
     }
 
@@ -145,6 +188,10 @@ public class Parser {
 
         if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);
+        }
+
+        if (match(IDENTIFIER)) {
+            return new Expr.Variable(previous());
         }
 
         if (match(LEFT_PAREN)) {
