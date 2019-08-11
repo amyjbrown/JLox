@@ -1,7 +1,7 @@
 package com.craftinginterpreters;
 
-public class AstPrinter implements Expr.Visitor<String> {
-
+public abstract class AstPrinter implements Expr.Visitor<String> {
+/*
     String print(Expr expr){
         // System.out.println(this);
         if (expr == null) return "";
@@ -54,5 +54,7 @@ public class AstPrinter implements Expr.Visitor<String> {
 
         return builder.toString();
     }
+
+ */
 }
 
