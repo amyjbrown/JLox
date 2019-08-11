@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = new Environment();
+    public boolean interactive_mode = false;
 
     void interpret(List<Stmt> statements) {
         try {
@@ -47,7 +48,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
-        evaluate(stmt.expression);
+        Object temp = evaluate(stmt.expression);
+        if (interactive_mode){
+            System.out.println(stringify(temp));
+            environment.define("_", temp);
+        }
         return null;
     }
 
