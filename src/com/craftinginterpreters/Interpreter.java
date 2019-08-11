@@ -55,6 +55,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    public Void visitWhileStmt (Stmt.While stmt) {
+        while (isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.body);
+        }
+        return null;
+    }
+
     // Put here because it's a natural pairing
     @Override
     public Object visitAssignExpr(Expr.Assign expr) {
