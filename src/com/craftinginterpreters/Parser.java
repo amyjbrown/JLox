@@ -45,7 +45,7 @@ public class Parser {
         Token name = consume(IDENTIFIER, "Expect variable name.");
 
         Expr initializer = null;
-        if (match(EQUAL_EQUAL)) {
+        if (match(EQUAL)) {
             initializer = expression();
         }
         consume(SEMICOLON, "Expect ';' after variable declaration.");
