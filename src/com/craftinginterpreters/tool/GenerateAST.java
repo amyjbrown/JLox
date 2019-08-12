@@ -19,7 +19,7 @@ public class GenerateAST {
                 "Ternary: Expr condition, Expr left, Expr right",
                 "Assign : Token name, Expr value",
                 "Binary : Expr left, Token operator, Expr right",
-                "Call : Expr callee, Token paren, List<Expr> arguements",
+                "Call : Expr callee, Token paren, List<Expr> arguments",
                 "Grouping : Expr expression",
                 "Literal : Object value",
                 "Logical : Expr left, Token operator, Expr right",
@@ -29,9 +29,11 @@ public class GenerateAST {
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Block : List<Stmt> statements",
                 "Expression : Expr expression",
+                "Function : Token name, List<Token> params, List<Stmt> body",
                 "If : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print : Expr expression",
                 "Var : Token name, Expr initializer",
+                "com.craftinginterpreters.Return : Token keyword, Expr value",
                 "While : Expr condition, Stmt body"
         ));
     }
