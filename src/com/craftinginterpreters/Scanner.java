@@ -71,7 +71,7 @@ class Scanner {
             //multiline characters
             case '!': addToken( match('=') ? BANG_EQUAL: BANG ); break;
             case '=': addToken( match('=') ? EQUAL_EQUAL: EQUAL ); break;
-            case '<': addToken( match('=') ? LESS_EQUAL : EQUAL ); break;
+            case '<': addToken( match('=') ? LESS_EQUAL : LESS ); break;
             case '>': addToken( match('=')? GREATER_EQUAL: GREATER); break;
 
             // Line comment matching
