@@ -173,7 +173,7 @@ public class Parser {
     }
 
     private Expr assignment(){
-        Expr expr = or();
+        Expr expr = ternary();
 
         if (match(EQUAL)) {
             Token equals = previous();
@@ -192,7 +192,7 @@ public class Parser {
     }
 
     private Expr ternary() {
-        Expr expr = equality();
+        Expr expr = or();
 
         while (match(QUESTION)){
             Expr left = expression();
