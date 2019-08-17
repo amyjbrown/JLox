@@ -140,7 +140,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     //proper things
     void resolve(List<Stmt> statements) {
         for (Stmt statement : statements) {
-            resolve(statements);
+            resolve(statement);
         }
     }
 
