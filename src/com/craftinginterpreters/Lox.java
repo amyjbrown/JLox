@@ -55,6 +55,10 @@ public class Lox {
         // Stop if there was a syntax error
         if (hadError) return;
 
+        // Semantic analysis pass
+        Resolver resolver = new Resolver (interpreter);
+        resolver.resolve(statements);
+
         // System.out.print("Current AST: ");
         // System.out.println(new AstPrinter().print(expression));
         interpreter.interpret(statements);
