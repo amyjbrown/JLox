@@ -350,6 +350,24 @@ public class Parser {
         return new Expr.Call(callee, paren, arguments);
     }
 
+    private Expr lambda() {
+        consume(LEFT_PAREN, "Expect '(' after function literal");
+        List<Token> parameters = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+        do {
+            if (parameters.size() >= 255) {
+                error(peek(), "Cannot have more than 255 parameters");
+            }
+
+            parameters.add(consume(IDENTIFIER, "Expect parameters name."));
+        } while (match(COMMA));
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters.");
+
+        consume(LEFT_BRACE, "Expect '(' before function literal body");
+        List<Stmt> body = block();
+        return new Expr.Lambda(parameters, body);
+    }
 
     private Expr primary() {
         if (match(FALSE)) return new Expr.Literal(false);
@@ -364,6 +382,11 @@ public class Parser {
             return new Expr.Variable(previous());
         }
 
+        if (match(FUNCTION)) {
+            // TODO getting this to work
+            return lambda();
+        }
+
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
@@ -371,6 +394,8 @@ public class Parser {
         }
         throw error(peek(), "Expect Expression");
     }
+
+
 
     // helper functions
 

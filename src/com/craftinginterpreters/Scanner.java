@@ -36,6 +36,7 @@ class Scanner {
         keywords.put("var",     VAR);
         keywords.put("while",   WHILE);
         keywords.put("for",     FOR);
+        keywords.put("function", FUNCTION);
 
     }
 

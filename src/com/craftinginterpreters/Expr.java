@@ -13,6 +13,7 @@ abstract class Expr {
         R visitLogicalExpr(Logical expr);
         R visitUnaryExpr(Unary expr);
         R visitVariableExpr(Variable expr);
+        R visitLambdaExpr(Lambda expr);
     }
  static class Ternary extends Expr {
     Ternary(Expr condition, Expr left, Expr right) {
@@ -109,6 +110,21 @@ abstract class Expr {
     final Token operator;
     final Expr right;
  }
+
+ // This is the function literal expression syntax, noted as "Lambda"
+ static class Lambda extends Expr {
+        Lambda(List<Token> params, List<Stmt> body) {
+            this.params = params;
+            this.body = body;
+        }
+
+        <R> R accept(Visitor<R> visitor) {
+            return visitor.visitLambdaExpr(this);
+        }
+        final List<Token> params;
+        final List<Stmt> body;
+ }
+
  static class Unary extends Expr {
     Unary(Token operator, Expr right) {
         this.operator = operator;

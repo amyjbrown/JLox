@@ -131,6 +131,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    // Lambda here, since it fits
+    public Object visitLambdaExpr(Expr.Lambda expr) {
+        Lambda lambda = new Lambda(expr, environment);
+        return lambda;
+    }
+
     @Override
     public Void visitIfStmt(Stmt.If stmt) {
         if (isTruthy(stmt.condition)){
