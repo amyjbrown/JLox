@@ -33,7 +33,10 @@ public class Parser {
 
     private Stmt declaration() {
         try {
-            if (match(FUN)) return function("function");
+            if (peek().type == FUN) {
+                if (tokens.get(current+1));
+                return function("function");
+            }
             if (match(VAR)) return varDeclaration();
             return statement();
         } catch (ParseError error) {
