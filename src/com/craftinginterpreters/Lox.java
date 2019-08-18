@@ -59,6 +59,10 @@ public class Lox {
         Resolver resolver = new Resolver (interpreter);
         resolver.resolve(statements);
 
+
+        //Stop if there was a error in the resolution pass
+        if (hadError) return;
+
         // System.out.print("Current AST: ");
         // System.out.println(new AstPrinter().print(expression));
         interpreter.interpret(statements);
