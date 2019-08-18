@@ -12,8 +12,6 @@ abstract class Stmt {
         R visitIfStmt(If stmt);
         R visitPrintStmt(Print stmt);
         R visitVarStmt(Var stmt);
-        R visitcom.craftinginterpreters.ReturnStmt(
-        com.craftinginterpreters.Lox.Return stmt);
         R visitWhileStmt(While stmt);
     }
  static class Block extends Stmt {
@@ -118,19 +116,7 @@ abstract class Stmt {
     final Token name;
     final Expr initializer;
  }
- static class com.craftinginterpreters.Return extends Stmt {
-    com.craftinginterpreters.Return(Token keyword, Expr value) {
-        this.keyword = keyword;
-        this.value = value;
-    }
 
-    <R> R accept(Visitor<R> visitor){
-        return visitor.visitcom.craftinginterpreters.ReturnStmt(this);
-        }
-
-    final Token keyword;
-    final Expr value;
- }
  static class While extends Stmt {
     While(Expr condition, Stmt body) {
         this.condition = condition;
