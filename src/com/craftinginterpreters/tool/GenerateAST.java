@@ -27,14 +27,13 @@ public class GenerateAST {
         ));
         defineAst(outputDir, "Stmt", Arrays.asList(
                 "Block : List<Stmt> statements",
-                "Class : Token name, List<Stmt.Function> methods",
                 "Expression : Expr expression",
                 "Function : Token name, List<Token> params, List<Stmt> body",
+                "Class : Token name, List<Stmt.Function> methods",
                 "Return : Token keyword, Expr value",
                 "If : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print : Expr expression",
                 "Var : Token name, Expr initializer",
-                "com.craftinginterpreters.Return : Token keyword, Expr value",
                 "While : Expr condition, Stmt body"
         ));
     }
@@ -44,7 +43,7 @@ public class GenerateAST {
             String path = outputDir + "/" + baseName + ".java";
             PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-            writer.println("package com.craftinginterpreters;");
+            writer.println("package com.craftinginterpreters.Lox;");
             writer.println();
             writer.println("import java.util.List;");
             writer.println();

@@ -56,10 +56,10 @@ public class Parser {
         Token name = consume(IDENTIFIER, "Expect class name.");
         consume(LEFT_BRACE, "Expect '{' before class body.");
 
-        List<Stmt.Function> methods = new ArrayList<>();
+        List<Stmt.Function> methods = new ArrayList<Stmt.Function>();
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
             // casting so as to not handle weird stuff
-            methods.add( (Stmt.Function) function("method"));
+            methods.add(function("method"));
         }
 
         consume(RIGHT_BRACE, "Expect '}' after class body.");
@@ -180,7 +180,7 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
-    private Stmt function(String kind) {
+    private Stmt.Function function(String kind) {
         Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
         consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
         List<Token> parameters = new ArrayList<>();
