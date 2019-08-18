@@ -33,8 +33,8 @@ public class Parser {
 
     private Stmt declaration() {
         try {
-            if (peek().type == FUN) {
-                if (tokens.get(current+1));
+            if (peek().type == FUN && peekNext().type == IDENTIFIER) {
+                advance();
                 return function("function");
             }
             if (match(VAR)) return varDeclaration();
@@ -344,7 +344,8 @@ public class Parser {
                 if (arguments.size() >= 255) {
                     error(peek(), "Cannot have more than 255 arguments");
                 }
-                arguments.add(expression());
+                /*This needs to have assignment here, otherwise the thing being returned is */
+                arguments.add(assignment());
             } while (match(COMMA));
         }
 
@@ -369,7 +370,7 @@ public class Parser {
 
         consume(LEFT_BRACE, "Expect '(' before function literal body");
         List<Stmt> body = block();
-        return new Expr.Lambda(parameters, body);
+        return new Expr.Lambda(previous().line, parameters, body);
     }
 
     private Expr primary() {
@@ -385,7 +386,7 @@ public class Parser {
             return new Expr.Variable(previous());
         }
 
-        if (match(FUNCTION)) {
+        if (match(FUN)) {
             // TODO getting this to work
             return lambda();
         }
@@ -395,6 +396,7 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
+
         throw error(peek(), "Expect Expression");
     }
 
@@ -423,6 +425,7 @@ public class Parser {
         return peek().type == type;
     }
 
+
     private Token advance() {
         if (!isAtEnd()) current ++;
         return previous();
@@ -434,6 +437,10 @@ public class Parser {
 
     private Token peek() {
         return tokens.get(current);
+    }
+
+    private Token peekNext() {
+        return tokens.get(current+1);
     }
 
     private Token previous() {

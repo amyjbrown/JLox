@@ -113,9 +113,10 @@ abstract class Expr {
 
  // This is the function literal expression syntax, noted as "Lambda"
  static class Lambda extends Expr {
-        Lambda(List<Token> params, List<Stmt> body) {
+        Lambda(int line, List<Token> params, List<Stmt> body) {
             this.params = params;
             this.body = body;
+            this.line = line;
         }
 
         <R> R accept(Visitor<R> visitor) {
@@ -123,6 +124,7 @@ abstract class Expr {
         }
         final List<Token> params;
         final List<Stmt> body;
+        final int line;
  }
 
  static class Unary extends Expr {

@@ -133,8 +133,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     // Lambda here, since it fits
     public Object visitLambdaExpr(Expr.Lambda expr) {
-        Lambda lambda = new Lambda(expr, environment);
-        return lambda;
+        // Originally I was going to add a "Fake" Function statement so that Loxfunction would be the same thing as a
+        // LoxLambda, but that's a bit awkward to fake here with the Token
+        Stmt.Function placeholder_stmt = new Stmt.Function(
+                new Token(TokenType.IDENTIFIER, "Lambda", null, expr.line), // Here to "Lambda"
+                expr.params, expr.body);
+        return new LoxFunction(placeholder_stmt, environment);
     }
 
     @Override

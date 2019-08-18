@@ -21,7 +21,7 @@ public enum TokenType {
     AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL,
     OR, PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
     // Keyword for Function Expression
-    FUNCTION,
+    // FUNCTION,
 
     // Token to show a file has ended
     EOF
