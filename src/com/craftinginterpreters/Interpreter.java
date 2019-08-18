@@ -9,6 +9,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     final Environment globals = new Environment();
     // This 'copies' the values, since the original is final
     private Environment environment = globals;
+    /*locals is a {Expr -> int} mapping
+    * In which case, this describe the number of steps you have to go up to the environment stack to
+    * access the appropiate variables
+    * thus in `{var x = 1;
+    *       {fun f(y) {return x + y;}}
+    *   }`
+    *  in the function body x will be 1 up, y will be zero (it's not implemented as such) and any global statements
+    * would be 2
+    * */
     private final Map<Expr, Integer> locals = new HashMap<>();
     public boolean interactive_mode = false;
 

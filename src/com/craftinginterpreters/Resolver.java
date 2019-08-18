@@ -56,6 +56,11 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitVariableExpr(Expr.Variable expr) {
+        // This checks if we're not in global scope (wherein we don't enforce the stronger rules of static scoping
+        // And then if we're in a a variable declaration
+        // scopes.peek().get(expr.name.lexeme) == Boolean.FALSE ensures that a variable is still being delcared but
+        // hasn't been defined, in which case that would eval to True since it has been defined as either nil or the
+        // user added expression
         if (!scopes.isEmpty() &&
         scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
             Lox.error(expr.name,
@@ -113,8 +118,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     public Void visitCallExpr (Expr.Call expr) {
         resolve(expr.callee);
 
-        for (Expr arguement : expr.arguments) {
-            resolve(arguement);
+        for (Expr argument : expr.arguments) {
+            resolve(argument);
         }
 
         return null;
@@ -145,6 +150,10 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private void resolveLocal(Expr expr, Token name) {
+        // This is the *special* function that makes closures work
+        // This adds to the interpreter we inject to the resolver that
+        // We should add a entry in the locals: dict<Expr, int> mapping to describe how far up the chain we need the
+        // the entity to be
         for (int i = scopes.size() - 1; i >= 0;i--){
             if (scopes.get(i).containsKey(name.lexeme)) {
                 interpreter.resolve(expr, scopes.size() - 1 - i);
