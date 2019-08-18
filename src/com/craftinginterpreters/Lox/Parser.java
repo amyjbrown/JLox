@@ -1,11 +1,9 @@
-package com.craftinginterpreters;
-
-import javafx.css.CssParser;
+package com.craftinginterpreters.Lox;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import static com.craftinginterpreters.TokenType.*;
+import static com.craftinginterpreters.Lox.TokenType.*;
 
 public class Parser {
     private static class ParseError extends RuntimeException {}
