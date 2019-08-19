@@ -300,7 +300,9 @@ public class Parser {
             Token operator = previous();
             Expr right = unary();
             return new Expr.Unary(operator, right);
-        }  else if (match(PLUS,SLASH,STAR, COMMA,
+        }
+        // invalid literal expression code
+        else if (match(PLUS,SLASH,STAR, COMMA,
                 EQUAL_EQUAL, BANG_EQUAL,
                 LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
             throw error(previous(), "Invalid unary operator");
@@ -314,6 +316,10 @@ public class Parser {
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
+            } else if(match(DOT)) {
+                Token name = consume(IDENTIFIER,
+                        "Expect property name after '.'.");
+                expr = new Expr.Get(expr, name);
             } else {
                 break;
             }
