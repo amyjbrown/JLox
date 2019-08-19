@@ -21,6 +21,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         return null;
     }
 
+
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) {
         declare(stmt.name);
@@ -92,6 +93,28 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         resolve (stmt.body);
         return null;
     }
+    @Override
+    public Void visitTernaryExpr(Expr.Ternary expr) {
+        resolve(expr.condition);
+        resolve(expr.left);
+        resolve(expr.right);
+        return null;
+    }
+
+
+    @Override
+    public Void visitLambdaExpr(Expr.Lambda expr) {
+        // Fakes a FunctionStmt so we can pass it here easily
+        resolveFunction(new Stmt.Function(
+                null,
+                expr.params, expr.body
+                )
+        );
+        return null;
+
+    }
+
+
 
     @Override
     public Void visitAssignExpr(Expr.Assign expr){
