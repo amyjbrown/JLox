@@ -1,11 +1,9 @@
-package com.craftinginterpreters;
-
-import javafx.css.CssParser;
+package com.craftinginterpreters.Lox;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import static com.craftinginterpreters.TokenType.*;
+import static com.craftinginterpreters.Lox.TokenType.*;
 
 public class Parser {
     private static class ParseError extends RuntimeException {}
@@ -37,6 +35,7 @@ public class Parser {
                 advance();
                 return function("function");
             }
+            if (match(CLASS)) return classDeclaration();
             if (match(VAR)) return varDeclaration();
             return statement();
         } catch (ParseError error) {
@@ -55,6 +54,22 @@ public class Parser {
         consume(SEMICOLON, "Expect ';' after variable declaration.");
         return new Stmt.Var(name, initializer);
     }
+
+    private Stmt classDeclaration() {
+        Token name = consume(IDENTIFIER, "Expect class name.");
+        consume(LEFT_BRACE, "Expect '{' before class body.");
+
+        List<Stmt.Function> methods = new ArrayList<Stmt.Function>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+            // casting so as to not handle weird stuff
+            methods.add(function("method"));
+        }
+
+        consume(RIGHT_BRACE, "Expect '}' after class body.");
+
+        return new Stmt.Class(name, methods);
+    }
+
 
     private Stmt whileStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'while'");
@@ -168,7 +183,7 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
-    private Stmt function(String kind) {
+    private Stmt.Function function(String kind) {
         Token name = consume(IDENTIFIER, "Expect " + kind + " name.");
         consume(LEFT_PAREN, "Expect '(' after " + kind + " name.");
         List<Token> parameters = new ArrayList<>();
@@ -217,6 +232,9 @@ public class Parser {
             if (expr instanceof Expr.Variable) {
                 Token name = ( (Expr.Variable) expr).name;
                 return new Expr.Assign(name, value);
+            } else if (expr instanceof Expr.Get) {
+                Expr.Get get = (Expr.Get)expr;
+                return new Expr.Set(get.object, get.name, value);
             }
 
             //This isn't thrown because it isn't a parser error, but a runtime-esq error
@@ -315,7 +333,9 @@ public class Parser {
             Token operator = previous();
             Expr right = unary();
             return new Expr.Unary(operator, right);
-        }  else if (match(PLUS,SLASH,STAR, COMMA,
+        }
+        // invalid literal expression code
+        else if (match(PLUS,SLASH,STAR, COMMA,
                 EQUAL_EQUAL, BANG_EQUAL,
                 LESS, LESS_EQUAL, GREATER, GREATER_EQUAL)) {
             throw error(previous(), "Invalid unary operator");
@@ -329,6 +349,10 @@ public class Parser {
         while (true) {
             if (match(LEFT_PAREN)) {
                 expr = finishCall(expr);
+            } else if(match(DOT)) {
+                Token name = consume(IDENTIFIER,
+                        "Expect property name after '.'.");
+                expr = new Expr.Get(expr, name);
             } else {
                 break;
             }
@@ -400,8 +424,6 @@ public class Parser {
         throw error(peek(), "Expect Expression");
     }
 
-
-
     // helper functions
 
     private boolean match(TokenType...types) {
@@ -424,7 +446,6 @@ public class Parser {
         if (isAtEnd()) return false;
         return peek().type == type;
     }
-
 
     private Token advance() {
         if (!isAtEnd()) current ++;

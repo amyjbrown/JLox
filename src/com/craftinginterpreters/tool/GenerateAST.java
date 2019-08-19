@@ -20,9 +20,12 @@ public class GenerateAST {
                 "Assign : Token name, Expr value",
                 "Binary : Expr left, Token operator, Expr right",
                 "Call : Expr callee, Token paren, List<Expr> arguments",
+                "Get : Expr object, Token name",
                 "Grouping : Expr expression",
                 "Literal : Object value",
                 "Logical : Expr left, Token operator, Expr right",
+                "Set : Expr object, Token name, Expr value",
+                "This : Token keyword",
                 "Unary : Token operator, Expr right",
                 "Variable : Token name"
         ));
@@ -30,10 +33,11 @@ public class GenerateAST {
                 "Block : List<Stmt> statements",
                 "Expression : Expr expression",
                 "Function : Token name, List<Token> params, List<Stmt> body",
+                "Class : Token name, List<Stmt.Function> methods",
+                "Return : Token keyword, Expr value",
                 "If : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print : Expr expression",
                 "Var : Token name, Expr initializer",
-                "com.craftinginterpreters.Return : Token keyword, Expr value",
                 "While : Expr condition, Stmt body"
         ));
     }
@@ -43,7 +47,7 @@ public class GenerateAST {
             String path = outputDir + "/" + baseName + ".java";
             PrintWriter writer = new PrintWriter(path, "UTF-8");
 
-            writer.println("package com.craftinginterpreters;");
+            writer.println("package com.craftinginterpreters.Lox;");
             writer.println();
             writer.println("import java.util.List;");
             writer.println();

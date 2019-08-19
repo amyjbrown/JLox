@@ -1,13 +1,13 @@
 // Scanner class
 // Use for scanning through source code and generating a set of tokens
-package com.craftinginterpreters;
+package com.craftinginterpreters.Lox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.craftinginterpreters.TokenType.*;
+import static com.craftinginterpreters.Lox.TokenType.*;
 
 
 class Scanner {

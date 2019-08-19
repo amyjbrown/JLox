@@ -1,8 +1,7 @@
-package com.craftinginterpreters;
+package com.craftinginterpreters.Lox;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -58,6 +57,10 @@ public class Lox {
         // Semantic analysis pass
         Resolver resolver = new Resolver (interpreter);
         resolver.resolve(statements);
+
+
+        //Stop if there was a error in the resolution pass
+        if (hadError) return;
 
         // System.out.print("Current AST: ");
         // System.out.println(new AstPrinter().print(expression));
