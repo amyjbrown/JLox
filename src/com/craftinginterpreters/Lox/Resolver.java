@@ -26,7 +26,6 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         NONE,
         FUNCTION,
         METHOD,
-        INITIALIZER,
     }
 
     @Override
@@ -41,9 +40,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         for (Stmt.Function method : stmt.methods) {
             FunctionType declaration = FunctionType.METHOD;
-            if (method.name.lexeme.equals("init")) {
-                declaration = FunctionType.INITIALIZER;
-            }
+            resolveFunction(method, declaration);
         }
 
         endScope();
@@ -124,10 +121,6 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             Lox.error(stmt.keyword, "Cannot return from top-level code, ");
         }
         if (stmt.value != null) {
-            if (currentFunction == FunctionType.INITIALIZER) {
-                Lox.error(stmt.keyword, "Cannot return value from an " +
-                        "initializer");
-            }
             resolve(stmt.value);
         }
 
@@ -155,7 +148,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
         resolveFunction(new Stmt.Function(
                 null,
                 expr.params, expr.body
-                )
+                ),
+                FunctionType.FUNCTION
         );
         return null;
 

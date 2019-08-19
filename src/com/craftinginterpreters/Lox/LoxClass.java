@@ -22,7 +22,10 @@ public class LoxClass implements LoxCallable{
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
         LoxInstance instance = new LoxInstance(this);
+        // check to see if the initializer is declared
         LoxFunction initializer = findMethod("init");
+        // If it is declared, assign to "this" the reference to the instance in
+        // the constructor, and then call it given the appropriate arguements
         if (initializer != null) {
             initializer.bind(instance).call(interpreter, arguments);
         }
@@ -32,6 +35,9 @@ public class LoxClass implements LoxCallable{
     @Override
     public int arity() {
         // todo add actual arity
+        LoxFunction init =  findMethod("init");
+        if (init!= null) return init.arity();
+        // return 0 if no defined initializer
         return 0;
     }
 
