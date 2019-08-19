@@ -1,12 +1,24 @@
 package com.craftinginterpreters;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     final Environment globals = new Environment();
     // This 'copies' the values, since the original is final
     private Environment environment = globals;
+    /*locals is a {Expr -> int} mapping
+    * In which case, this describe the number of steps you have to go up to the environment stack to
+    * access the appropiate variables
+    * thus in `{var x = 1;
+    *       {fun f(y) {return x + y;}}
+    *   }`
+    *  in the function body x will be 1 up, y will be zero (it's not implemented as such) and any global statements
+    * would be 2
+    * */
+    private final Map<Expr, Integer> locals = new HashMap<>();
     public boolean interactive_mode = false;
 
     Interpreter() {
@@ -43,6 +55,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Void execute(Stmt stmt){
         stmt.accept(this);
         return null;
+    }
+
+    void resolve(Expr expr, int depth) {
+        locals.put(expr, depth);
     }
 
     void executeBlock(List<Stmt> statements, Environment environment) {
@@ -259,7 +275,15 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) {
-        return environment.get(expr.name);
+
+        return lookUpVariable(expr.name, expr);
+    }
+
+    private Object lookUpVariable (Token name, Expr expr) {
+        Integer distance = locals.get(expr);
+        if (distance != null) {
+            return environment.getAt(distance, name.lexeme);
+        } else return globals.get(name);
     }
 
 
