@@ -10,10 +10,17 @@ public class LoxFunction implements LoxCallable {
         this.closure = closure;
     }
 
+    LoxFunction bind(LoxInstance instance) {
+        // This binds a new environment reffering to an objects "this" reference
+        Environment environment = new Environment(closure);
+        environment.define("this", instance);
+        return new LoxFunction(declaration, environment);
+    }
+
     @Override
     public Object call(Interpreter interpreter, List<Object> arguments) {
         Environment environment = new Environment(closure);
-        for (int i = 0; i < declaration.params.size(); i ++) {
+        for (int i = 0; i < declaration.params.size(); i++) {
             environment.define(declaration.params.get(i).lexeme,
                     arguments.get(i));
         }
@@ -24,6 +31,7 @@ public class LoxFunction implements LoxCallable {
         }
         return null;
     }
+
     @Override
     public int arity() {
         return declaration.params.size();
