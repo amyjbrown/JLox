@@ -10,13 +10,13 @@ abstract class Expr {
         R visitCallExpr(Call expr);
         R visitGetExpr(Get expr);
         R visitGroupingExpr(Grouping expr);
+        R visitLambdaExpr(Lambda expr);
         R visitLiteralExpr(Literal expr);
         R visitLogicalExpr(Logical expr);
         R visitSetExpr(Set expr);
         R visitThisExpr(This expr);
         R visitUnaryExpr(Unary expr);
         R visitVariableExpr(Variable expr);
-        R visitLambdaExpr(Lambda expr);
     }
  static class Ternary extends Expr {
     Ternary(Expr condition, Expr left, Expr right) {
@@ -100,6 +100,21 @@ abstract class Expr {
 
     final Expr expression;
  }
+ static class Lambda extends Expr {
+    Lambda(int Line, List<Token> params, List<Stmt> body) {
+        this.Line = Line;
+        this.params = params;
+        this.body = body;
+    }
+
+    <R> R accept(Visitor<R> visitor){
+        return visitor.visitLambdaExpr(this);
+        }
+
+    final int Line;
+    final List<Token> params;
+    final List<Stmt> body;
+ }
  static class Literal extends Expr {
     Literal(Object value) {
         this.value = value;
@@ -152,23 +167,6 @@ abstract class Expr {
 
     final Token keyword;
  }
-
- // This is the function literal expression syntax, noted as "Lambda"
- static class Lambda extends Expr {
-        Lambda(int line, List<Token> params, List<Stmt> body) {
-            this.params = params;
-            this.body = body;
-            this.line = line;
-        }
-
-        <R> R accept(Visitor<R> visitor) {
-            return visitor.visitLambdaExpr(this);
-        }
-        final List<Token> params;
-        final List<Stmt> body;
-        final int line;
- }
-
  static class Unary extends Expr {
     Unary(Token operator, Expr right) {
         this.operator = operator;
