@@ -11,7 +11,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private Environment environment = globals;
     /*locals is a {Expr -> int} mapping
     * In which case, this describe the number of steps you have to go up to the environment stack to
-    * access the appropiate variables
+    * access the appropriate variables
     * thus in `{var x = 1;
     *       {fun f(y) {return x + y;}}
     *   }`
@@ -22,20 +22,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public boolean interactive_mode = false;
 
     Interpreter() {
-        globals.define("clock", new LoxCallable() {
-            @Override
-            public int arity() {
-                return 0;
-            }
-
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments) {
-                return (double) System.currentTimeMillis() / 1000.0;
-            }
-
-            @Override
-            public String toString() {return "<Native fn \"clock\">";}
-        });
+        Globals.define(this);
     }
 
     // Top level management
@@ -131,7 +118,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
 
         LoxCallable function = (LoxCallable) callee;
-        if (arguments.size() != function.arity()) {
+        // && function.arity() != -1 is to make sure we aren't using the hack I made for native functions to handle
+        // A few things
+        if (arguments.size() != function.arity()
+        /* && function.arity() != -1*/) {
             throw new RuntimeError(expr.paren, "Expected" +
                     + function.arity() + " arguments but got " +
                     arguments.size() + ".");
