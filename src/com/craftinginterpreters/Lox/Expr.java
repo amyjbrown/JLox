@@ -101,8 +101,8 @@ abstract class Expr {
     final Expr expression;
  }
  static class Lambda extends Expr {
-    Lambda(int Line, List<Token> params, List<Stmt> body) {
-        this.Line = Line;
+    Lambda(int line, List<Token> params, List<Stmt> body) {
+        this.line = line;
         this.params = params;
         this.body = body;
     }
@@ -111,7 +111,7 @@ abstract class Expr {
         return visitor.visitLambdaExpr(this);
         }
 
-    final int Line;
+    final int line;
     final List<Token> params;
     final List<Stmt> body;
  }
