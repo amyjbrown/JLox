@@ -19,7 +19,8 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     // for handling returns and other things
     private enum ClassType {
         NONE,
-        CLASS
+        CLASS,
+        SUBCLASS
     }
 
     private enum FunctionType {
@@ -45,6 +46,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         // Resolve superclass
         if (stmt.superclass != null) {
+            currentClass = ClassType.SUBCLASS;
             resolve(stmt.superclass);
         }
 
@@ -219,6 +221,17 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitSuperExpr(Expr.Super expr) {
+        // Ensure that 'super' only appears in appropriate enviroments
+        if (currentClass == ClassType.NONE) {
+            Lox.error(expr.keyword,
+                    "Cannot use 'super' outside of a class.");
+        } else if (currentClass != ClassType.SUBCLASS)
+        {
+            Lox.error(expr.keyword,
+                    "Cannot use 'super' in a class with no superclass.");
+        }
+
+
         resolveLocal(expr, expr.keyword);
         return null;
     }
