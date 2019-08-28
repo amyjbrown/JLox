@@ -41,6 +41,8 @@ public class Parser {
         } catch (ParseError error) {
             synchronize();
             return null;
+        } catch (NotDoneErr err) {
+            throw err;
         }
     }
 
@@ -51,7 +53,7 @@ public class Parser {
         if (match(EQUAL)) {
             initializer = expression();
         }
-        consume(SEMICOLON, "Expect ';' after variable declaration.");
+        query(SEMICOLON, "Expect ';' after variable declaration.");
         return new Stmt.Var(name, initializer);
     }
 
@@ -65,7 +67,7 @@ public class Parser {
             methods.add(function("method"));
         }
 
-        consume(RIGHT_BRACE, "Expect '}' after class body.");
+        query(RIGHT_BRACE, "Expect '}' after class body.");
 
         return new Stmt.Class(name, methods);
     }
@@ -74,7 +76,7 @@ public class Parser {
     private Stmt whileStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'while'");
         Expr condition = expression();
-        consume(RIGHT_PAREN, "Expect ')' after condition");
+        query(RIGHT_PAREN, "Expect ')' after condition");
         Stmt body = statement();
 
         return new Stmt.While(condition, body);
@@ -114,7 +116,7 @@ public class Parser {
         if (!check(RIGHT_PAREN)) {
             increment = expression();
         }
-        consume(RIGHT_PAREN, "Expect ')' after for clauses");
+        query(RIGHT_PAREN, "Expect ')' after for clauses");
 
         // Getting the body
         Stmt body = statement();
@@ -138,7 +140,7 @@ public class Parser {
     private Stmt ifStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'if'.");
         Expr condition = expression();
-        consume(RIGHT_PAREN, "Expect ')' after if condition.");
+        query(RIGHT_PAREN, "Expect ')' after if condition.");
 
         Stmt thenBranch = statement();
         Stmt elseBranch = null;
@@ -156,7 +158,7 @@ public class Parser {
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
             statements.add(declaration());
         }
-        consume(RIGHT_BRACE, "Expect '}' after block");
+        query(RIGHT_BRACE, "Expect '}' after block");
         return statements;
     }
 
@@ -390,7 +392,7 @@ public class Parser {
             parameters.add(consume(IDENTIFIER, "Expect parameters name."));
         } while (match(COMMA));
         }
-        consume(RIGHT_PAREN, "Expect ')' after parameters.");
+        query(RIGHT_PAREN, "Expect ')' after parameters.");
 
         consume(LEFT_BRACE, "Expect '(' before function literal body");
         List<Stmt> body = block();
@@ -418,7 +420,7 @@ public class Parser {
 
         if (match(LEFT_PAREN)) {
             Expr expr = expression();
-            consume(RIGHT_PAREN, "Expect ')' after expression.");
+            query(RIGHT_PAREN, "Expect ')' after expression.");
             return new Expr.Grouping(expr);
         }
 
@@ -438,9 +440,17 @@ public class Parser {
         return false;
     }
 
+
+    // Error consuming tokens
+
     private Token consume(TokenType type, String message) {
         if (check(type)) return advance();
         throw error(peek(), message);
+    }
+
+    private Token query(TokenType type, String message) {
+        if (check(type)) return advance();
+        throw new NotDoneErr(message);
     }
 
     private boolean check(TokenType type) {

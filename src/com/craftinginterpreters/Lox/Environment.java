@@ -27,7 +27,7 @@ public class Environment {
         // Recursively walk through your object
         Environment environment = this;
         for (int i = 0; i < distance; i++) {
-            environment = enclosing.enclosing;
+            environment = environment.enclosing;
         }
         return environment;
     }
