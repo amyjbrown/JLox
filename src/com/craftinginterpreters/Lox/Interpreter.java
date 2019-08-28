@@ -178,7 +178,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         Stmt.Function placeholder_stmt = new Stmt.Function(
                 new Token(TokenType.IDENTIFIER, "Lambda", null, expr.line), // Here to "Lambda"
                 expr.params, expr.body);
-        return new LoxFunction(placeholder_stmt, environment);
+        return new LoxFunction(placeholder_stmt, environment, false);
     }
 
     @Override
