@@ -25,6 +25,8 @@ public class Environment {
 
     Environment ancestor (int distance) {
         // Recursively walk through your object
+        // This was a major source of errors, since it was jumping up multiple levels with enclosing.enclosing
+        // Not entirely sure how it was bug free initially
         Environment environment = this;
         for (int i = 0; i < distance; i++) {
             environment = environment.enclosing;

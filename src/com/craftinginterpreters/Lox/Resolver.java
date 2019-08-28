@@ -155,8 +155,6 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
     }
 
-
-
     @Override
     public Void visitAssignExpr(Expr.Assign expr){
         resolve(expr.value);
@@ -238,12 +236,35 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     }
 
     private void resolveLocal(Expr expr, Token name) {
-        // This is the *special* function that makes closures work
-        // This adds to the interpreter we inject to the resolver that
-        // We should add a entry in the locals: dict<Expr, int> mapping to describe how far up the chain we need the
-        // the entity to be
+        /* This is the *special* function that makes closures work
+        This adds to the interpreter we inject to the resolver that
+        We should add a entry in the locals: dict<Expr, int> mapping to describe how far up the chain we need the
+        the entity to be
+
+        Count down from current scope stack depth(zero-indexed)
+        Check IF the current scope in iteration contains the name
+        If it does contain the name, then Put into Interpreter.locals the Expr and the depth it has to go
+
+        Thus for
+        ```
+        var x = "outer"; # global is equivalent to "empty scope"
+        {var y = "inner"; # scope 1
+            {             # scope level 2
+            print x;
+            }
+        }
+        ```
+        when it gets to `print x`, it is 2 scopes deep
+        Thus we have Scopes: scope1, scope2
+        iteration 1: i = 1; scopes.get(1).containsKey(x) ->> FALSE
+        Iteration 2: i = 0; scopes.get(0).containsKey(x) ->> TRUE
+        interperter.locals <- Expr = LiteralExpr("x"), scopes.size() - 1 - i ->> 2 -1 -0 ->> 1
+
+        Now, when interpreter calls visitVariableExpr
+        */
         for (int i = scopes.size() - 1; i >= 0;i--){
             if (scopes.get(i).containsKey(name.lexeme)) {
+                // If it does contain the name
                 interpreter.resolve(expr, scopes.size() - 1 - i);
                 return;
             }
