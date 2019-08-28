@@ -136,7 +136,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
                     + function.arity() + " arguments but got " +
                     arguments.size() + ".");
         }
-        return function.call(this, arguments);
+
+        // If a native function has a problem, catch it and handle it like a runtime error
+        try {
+            return function.call(this, arguments);
+        } catch (NativeFunctionError err) {
+            throw new RuntimeError(expr.paren, err.message);
+        }
     }
 
     @Override

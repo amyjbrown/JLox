@@ -92,7 +92,7 @@ public class Lox {
 
     static void runtimeError(RuntimeError error) {
         System.err.println(
-                error.getMessage() + "\n[line " + error.token.line + "]");
+                "\n[line " + error.token.line + "] " + error.getMessage());
         hadRuntimeError = true;
         //System.out.println(); // This keeps the new > on the same line for IDEA, may remove later
     }

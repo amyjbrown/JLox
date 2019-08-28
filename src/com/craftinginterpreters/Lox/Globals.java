@@ -38,14 +38,16 @@ public class Globals {
 
         @Override
         public Object call(Interpreter interpreter, List<Object> arguments) {
-            return Math.abs((double) arguments.get(0));
+            if (arguments.get(0) instanceof Double)
+                return Math.abs((double) arguments.get(0));
+            throw new NativeFunctionError("abs(x) argument must be a number.");
         }
         @Override
         public String toString() {return "<Native function 'abs'>";}
     };
 
     // input: Prompts user for info
-    private static LoxCallable input = new LoxCallable() {
+    /* private static LoxCallable input = new LoxCallable() {
         @Override
         public int arity() { return 1; }
 
@@ -57,6 +59,6 @@ public class Globals {
 
             return null; //reader.readLine();
         }
-    };
+    }; */
 
 }
