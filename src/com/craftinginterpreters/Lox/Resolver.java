@@ -35,6 +35,14 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         declare(stmt.name);
         define(stmt.name);
+
+        // Prevent circular loops of inheritance
+        if (stmt.superclass != null &&
+        stmt.name.lexeme.equals(stmt.superclass.name.lexeme)){
+            Lox.error(stmt.superclass.name,
+                    "A class cannot inherit from itself.");
+        }
+
         beginScope();
         scopes.peek().put("this", true);
 
