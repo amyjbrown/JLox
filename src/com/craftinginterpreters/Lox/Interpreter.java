@@ -321,9 +321,10 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Object visitSuperExpr(Expr.Super expr) {
+        //System.out.println(expr == null);
         int distance = locals.get(expr);
         LoxClass superclass = (LoxClass) environment.getAt(distance, "super");
-
+        System.out.println(superclass == null);
         // "This" is always one level nearer than 'Super''s enviroment
         LoxInstance object = (LoxInstance) environment.getAt(
                 distance -1, "this"
