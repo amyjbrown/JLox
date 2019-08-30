@@ -10,6 +10,8 @@ Currently implemented features:
  * Lexically scoped language
  * First-class Functions and closures
  * Classes
+ * Docstrings, which are added between a callable and it's body  
+     `fun max(a, b) "Returns the largest element of (a, b)" {...}`
  * Multiline embedded comments using `/* */` syntax
  * Ternary operator `condition ? value1 : value 2`
  * Comma operator like C `val1, val2`
@@ -19,3 +21,4 @@ Extended Native Functions:
  * `abs(x)` find the absolute value of `x`
  * `assert(condition)` throws a runtime exception if conditin evaluates to false
  * `exit(code)` Exits application with exit-code `code`
+ * `help(object)` Prints a help-string for a class or function;
