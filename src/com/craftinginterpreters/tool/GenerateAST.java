@@ -23,6 +23,7 @@ public class GenerateAST {
                 "Get : Expr object, Token name",
                 "Grouping : Expr expression",
                 "Literal : Object value",
+                "Lambda : int line, List<Token> params, List<Stmt> body",
                 "Logical : Expr left, Token operator, Expr right",
                 "Set : Expr object, Token name, Expr value",
                 "This : Token keyword",
