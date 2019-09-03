@@ -19,13 +19,15 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
     // for handling returns and other things
     private enum ClassType {
         NONE,
-        CLASS
+        CLASS,
+        SUBCLASS
     }
 
     private enum FunctionType {
         NONE,
         FUNCTION,
         METHOD,
+        INITIALIZER,
     }
 
     @Override
@@ -35,11 +37,34 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         declare(stmt.name);
         define(stmt.name);
+
+        // Prevent circular loops of inheritance
+        if (stmt.superclass != null &&
+                stmt.name.lexeme.equals(stmt.superclass.name.lexeme)){
+            Lox.error(stmt.superclass.name,
+                    "A class cannot inherit from itself.");
+        }
+
+        // Resolve superclass
+        if (stmt.superclass != null) {
+            currentClass = ClassType.SUBCLASS;
+            resolve(stmt.superclass);
+        }
+
+        if (stmt.superclass != null) {
+            beginScope();
+            scopes.peek().put("super", true);
+        }
+
+
         beginScope();
         scopes.peek().put("this", true);
 
         for (Stmt.Function method : stmt.methods) {
             FunctionType declaration = FunctionType.METHOD;
+            if (method.name.lexeme.equals("init")) {
+                declaration = FunctionType.INITIALIZER;
+            }
             resolveFunction(method, declaration);
         }
 
@@ -51,6 +76,11 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             FunctionType declaration = FunctionType.FUNCTION;
             resolveFunction(method, declaration);
         }
+
+        if (stmt.superclass != null) endScope();
+
+        //???? HOW DID THIS WORK IF THIS WAS GONE
+        currentClass = enclosingClass;
 
         return null;
     }
@@ -200,6 +230,23 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             Lox.error(expr.keyword,
                     "Cannot use 'this' in static method.");
         }
+        resolveLocal(expr, expr.keyword);
+        return null;
+    }
+
+    @Override
+    public Void visitSuperExpr(Expr.Super expr) {
+        // Ensure that 'super' only appears in appropriate enviroments
+        if (currentClass == ClassType.NONE) {
+            Lox.error(expr.keyword,
+                    "Cannot use 'super' outside of a class.");
+        } else if (currentClass != ClassType.SUBCLASS)
+        {
+            Lox.error(expr.keyword,
+                    "Cannot use 'super' in a class with no superclass.");
+        }
+
+
         resolveLocal(expr, expr.keyword);
         return null;
     }

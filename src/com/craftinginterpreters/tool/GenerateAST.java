@@ -24,10 +24,10 @@ public class GenerateAST {
                 "Grouping : Expr expression",
                 "Lambda : int line, List<Token> params, List<Stmt> body",
                 "Literal : Object value",
-                "Lambda : int line, List<Token> params, List<Stmt> body",
                 "Logical : Expr left, Token operator, Expr right",
                 "Set : Expr object, Token name, Expr value",
                 "This : Token keyword",
+                "Super : Token keyword, Token method",
                 "Unary : Token operator, Expr right",
                 "Variable : Token name"
         ));
@@ -35,7 +35,7 @@ public class GenerateAST {
                 "Block : List<Stmt> statements",
                 "Expression : Expr expression",
                 "Function : Token name, List<Token> params, List<Stmt> body",
-                "Class : Token name, List<Stmt.Function> methods, List<Stmt.Function> staticMethods",
+                "Class : Token name, Expr.Variable superclass, List<Stmt.Function> methods, List<Stmt.Function> staticMethods",
                 "Return : Token keyword, Expr value",
                 "If : Expr condition, Stmt thenBranch, Stmt elseBranch",
                 "Print : Expr expression",
