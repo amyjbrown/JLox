@@ -45,6 +45,13 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 
         endScope();
 
+        // This is added so that static methods don't hold a copy of `this`, hence they just work like funcitons
+        // the same way those bound to instances after creation are.
+        for (Stmt.Function method : stmt.staticMethods) {
+            FunctionType declaration = FunctionType.FUNCTION;
+            resolveFunction(method, declaration);
+        }
+
         return null;
     }
 
@@ -188,6 +195,10 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
             Lox.error(expr.keyword,
                     "Cannot use 'this' outside of a class.");
             return null;
+        }
+        if (currentClass == ClassType.CLASS && currentFunction != FunctionType.METHOD) {
+            Lox.error(expr.keyword,
+                    "Cannot use 'this' in static method.");
         }
         resolveLocal(expr, expr.keyword);
         return null;

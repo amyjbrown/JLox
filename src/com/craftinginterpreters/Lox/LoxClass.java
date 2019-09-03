@@ -3,18 +3,27 @@ package com.craftinginterpreters.Lox;
 import java.util.List;
 import java.util.Map;
 
-public class LoxClass implements LoxCallable{
+public class LoxClass extends LoxInstance implements LoxCallable{
     final String name;
     private final Map<String, LoxFunction> methods;
+    private final Map<String, LoxFunction> static_methods;
 
-    LoxClass(String name, Map<String, LoxFunction> methods) {
+    LoxClass(String name, Map<String, LoxFunction> methods, Map<String, LoxFunction> static_methods) {
         this.name = name;
         this.methods = methods;
+        this.static_methods = static_methods;
     }
 
     LoxFunction findMethod(String name) {
         if (methods.containsKey(name)) {
             return methods.get(name);
+        }
+        return null;
+    }
+
+    LoxFunction findStaticMethod(String name) {
+        if (static_methods.containsKey(name)) {
+            return static_methods.get(name);
         }
         return null;
     }
@@ -30,6 +39,23 @@ public class LoxClass implements LoxCallable{
             initializer.bind(instance).call(interpreter, arguments);
         }
         return instance;
+    }
+
+    @Override
+    Object get(Token name) {
+        LoxFunction static_method = findStaticMethod(name.lexeme);
+
+        if (static_method != null) {
+            return static_method;
+        }
+        throw new RuntimeError(name, "Static method '" + name.lexeme +
+                "' could not be found on class " + name + "'");
+    }
+
+    @Override
+    void set(Token name, Object value) {
+        // Override to keep things kosher
+        throw new RuntimeError(name, "Cannot assign class attributes currently.");
     }
 
     @Override
