@@ -9,7 +9,8 @@ public class LoxClass extends LoxInstance implements LoxCallable{
     private final Map<String, LoxFunction> static_methods;
     final LoxClass superclass;
 
-    LoxClass(String name, LoxClass superclass, Map<String, LoxFunction> methods, Map<String, LoxFunction> static_methods) {
+    LoxClass(String name, LoxClass superclass,
+             Map<String, LoxFunction> methods, Map<String, LoxFunction> static_methods) {
         this.name = name;
         this.methods = methods;
         this.static_methods = static_methods;
@@ -32,6 +33,10 @@ public class LoxClass extends LoxInstance implements LoxCallable{
         if (static_methods.containsKey(name)) {
             return static_methods.get(name);
         }
+        if (superclass != null) {
+            return superclass.findStaticMethod(name);
+        }
+
         return null;
     }
 
@@ -56,7 +61,7 @@ public class LoxClass extends LoxInstance implements LoxCallable{
             return static_method;
         }
         throw new RuntimeError(name, "Static method '" + name.lexeme +
-                "' could not be found on class " + name + "'");
+                "' could not be found on class " + this.name + "'");
     }
 
     @Override

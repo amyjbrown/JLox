@@ -94,9 +94,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             staticMethods.put(method.name.lexeme, function);
         }
 
-        LoxClass klass = new LoxClass(stmt.name.lexeme, methods, staticMethods);
-        LoxClass klass = new LoxClass(stmt.name.lexeme,
-                (LoxClass) superclass, methods);
+        LoxClass klass = new LoxClass(stmt.name.lexeme, (LoxClass) superclass, methods, staticMethods);
 
         if (superclass != null) {
             environment = environment.enclosing;
