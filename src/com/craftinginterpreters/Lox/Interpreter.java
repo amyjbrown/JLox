@@ -78,7 +78,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         if (stmt.superclass != null) {
             environment = new Environment(environment);
-            environment.define("Super", superclass);
+            environment.define("super", superclass);
         }
 
         Map<String, LoxFunction> methods = new HashMap<>();
