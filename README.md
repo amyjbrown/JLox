@@ -19,6 +19,6 @@ Currently implemented features:
 
 Extended Native Functions:
  * `abs(x)` find the absolute value of `x`
- * `assert(condition)` throws a runtime exception if conditin evaluates to false
+ * `assert(condition)` throws a runtime exception if condition evaluates to false
  * `exit(code)` Exits application with exit-code `code`
  * `help(object)` Prints a help-string for a class or function;
